@@ -5,7 +5,7 @@ import {
   View,
   Button,
   TextInput,
-  ScrollView,
+  FlatList,
 } from "react-native";
 
 export default function App() {
@@ -19,12 +19,12 @@ export default function App() {
   function addGoalHandler() {
     setCourseGoals((currentCourseGoals) => [
       ...currentCourseGoals,
-      enteredGoalText,
+      { text: enteredGoalText, id: Math.random().toString() },
     ]);
   }
 
   function resetHandler() {
-    setCourseGoals([""]);
+    setCourseGoals([]);
   }
   return (
     <View style={styles.appContainer}>
@@ -38,13 +38,19 @@ export default function App() {
       </View>
       <Text style={styles.goalList}>List of Goals</Text>
       <View style={styles.goalsContainer}>
-        <ScrollView>
-          {courseGoals.map((goal) => (
-            <View key={goal} style={styles.goalItem}>
-              <Text style={styles.goalText}>{goal}</Text>
-            </View>
-          ))}
-        </ScrollView>
+        <FlatList
+          data={courseGoals}
+          renderItem={(itemData) => {
+            return (
+              <View style={styles.goalItem}>
+                <Text style={styles.goalText}>{itemData.item.text}</Text>
+              </View>
+            );
+          }}
+          keyExtractor={(item, index) => {
+            return item.id;
+          }}
+        />
       </View>
       <View style={styles.resetButton}>
         <Button title="Reset" color={"red"} onPress={resetHandler} />
